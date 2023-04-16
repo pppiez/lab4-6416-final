@@ -46,6 +46,7 @@ TIM_HandleTypeDef htim5;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+uint64_t _micros = 0;
 
 /* USER CODE END PV */
 
@@ -57,6 +58,7 @@ static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM5_Init(void);
 /* USER CODE BEGIN PFP */
+inline uint64_t micros();
 
 /* USER CODE END PFP */
 
@@ -98,7 +100,15 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start(&htim5); // micros()
+  HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_1|TIM_CHANNEL_2); // read encoder from channel 1 and channel 2
 
+  // control variable
+  HAL_TIM_Base_Start(&htim1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+
+  HAL_TIM_Base_Start_IT(&htim3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -108,6 +118,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  static uint64_t timestamp = 0;
+	  int64_t currentTime = micros();
+	  if(currentTime > timestamp){
+		  timestamp = currentTime + 1000;
   }
   /* USER CODE END 3 */
 }
@@ -388,6 +402,17 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if(htim == &htim5){
+		_micros += UINT32_MAX;
+	}
+
+}
+
+uint64_t micros(){
+	return __HAL_TIM_GET_COUNTER(&htim5) + _micros;
+}
 
 /* USER CODE END 4 */
 
