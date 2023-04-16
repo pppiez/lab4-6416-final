@@ -48,6 +48,13 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint64_t _micros = 0;
 
+// unwrap
+uint32_t PositionUnwrap = 0;
+int16_t flag = 0;
+float duty = 0;
+float dutyNote = 1;
+uint32_t CurrentPosition = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -122,6 +129,10 @@ int main(void)
 	  int64_t currentTime = micros();
 	  if(currentTime > timestamp){
 		  timestamp = currentTime + 1000;
+		  CurrentPosition = __HAL_TIM_GET_COUNTER(&htim3);
+		  PositionUnwrap = CurrentPosition + (61440*(flag-1)); // get position unwrap
+
+	  }
   }
   /* USER CODE END 3 */
 }
@@ -407,13 +418,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if(htim == &htim5){
 		_micros += UINT32_MAX;
 	}
-
+	if(htim == &htim3){
+		if(dutyNote){
+			flag = flag + 1;
+		}
+		else{
+			flag = flag - 1;
+		}
+	}
 }
 
 uint64_t micros(){
 	return __HAL_TIM_GET_COUNTER(&htim5) + _micros;
 }
-
 /* USER CODE END 4 */
 
 /**
