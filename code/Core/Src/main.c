@@ -57,11 +57,12 @@ struct encoder
 {
 	float setpointDeg;
 	float setpointPulse;
+	uint32_t myDeg;
 };
 struct encoder MyQEI = {0};
 
 // PID
-float Kp = 0.5; // 30
+float Kp = 1.8;
 float Ki = 0;
 float Kd = 0;
 float error = 0;
@@ -144,8 +145,10 @@ int main(void)
 	  if(currentTime > timestamp){
 		  timestamp = currentTime + 5;
 		  CurrentPosition = __HAL_TIM_GET_COUNTER(&htim3);
-		  PositionUnwrap = CurrentPosition + (61440*(flag-1)); // get position unwrap
-		  MyQEI.setpointPulse = (MyQEI.setpointDeg*307200)/36000; // degree input to pulse
+		  PositionUnwrap = CurrentPosition + (61440.0*(flag-1)); // get position unwrap
+		  MyQEI.setpointPulse = (MyQEI.setpointDeg*307200.0)/36000.0; // degree input to pulse
+
+		  MyQEI.myDeg = (uint32_t)((PositionUnwrap*36000.0)/307200.0);
 
 		  error = MyQEI.setpointPulse - PositionUnwrap;
 
