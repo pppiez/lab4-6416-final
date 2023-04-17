@@ -46,14 +46,12 @@ TIM_HandleTypeDef htim5;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint64_t _micros = 0;
-
 // unwrap
-uint32_t PositionUnwrap = 0;
-int16_t flag = 0;
+float PositionUnwrap = 0;
+float flag = 0;
 float duty = 0;
 float dutyNote = 1;
-uint32_t CurrentPosition = 0;
+float CurrentPosition = 0;
 
 struct encoder
 {
@@ -63,7 +61,6 @@ struct encoder
 struct encoder MyQEI = {0};
 
 // PID
-uint8_t motorDir = 0;
 float Kp = 0.5; // 30
 float Ki = 0;
 float Kd = 0;
@@ -81,7 +78,6 @@ static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM5_Init(void);
 /* USER CODE BEGIN PFP */
-inline uint64_t micros();
 void PIDController();
 /* USER CODE END PFP */
 
@@ -132,6 +128,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 
   HAL_TIM_Base_Start_IT(&htim3);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -142,9 +139,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  static uint64_t timestamp = 0;
-	  int64_t currentTime = micros();
+	  int64_t currentTime = HAL_GetTick();
+
 	  if(currentTime > timestamp){
-		  timestamp = currentTime + 1000;
+		  timestamp = currentTime + 5;
 		  CurrentPosition = __HAL_TIM_GET_COUNTER(&htim3);
 		  PositionUnwrap = CurrentPosition + (61440*(flag-1)); // get position unwrap
 		  MyQEI.setpointPulse = (MyQEI.setpointDeg*307200)/36000; // degree input to pulse
@@ -437,9 +435,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if(htim == &htim5){
-		_micros += UINT32_MAX;
-	}
 	if(htim == &htim3){
 		if(dutyNote){
 			flag = flag + 1;
@@ -448,10 +443,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			flag = flag - 1;
 		}
 	}
-}
-
-uint64_t micros(){
-	return __HAL_TIM_GET_COUNTER(&htim5) + _micros;
 }
 
 void PIDController(){
