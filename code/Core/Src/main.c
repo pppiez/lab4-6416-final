@@ -55,6 +55,22 @@ float duty = 0;
 float dutyNote = 1;
 uint32_t CurrentPosition = 0;
 
+struct encoder
+{
+	float setpointDeg;
+	float setpointPulse;
+};
+struct encoder MyQEI = {0};
+
+// PID
+uint8_t motorDir = 0;
+float Kp = 0.5; // 30
+float Ki = 0;
+float Kd = 0;
+float error = 0;
+float previouserror = 0;
+float ITerm = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,7 +82,7 @@ static void MX_TIM3_Init(void);
 static void MX_TIM5_Init(void);
 /* USER CODE BEGIN PFP */
 inline uint64_t micros();
-
+void PIDController();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -131,7 +147,13 @@ int main(void)
 		  timestamp = currentTime + 1000;
 		  CurrentPosition = __HAL_TIM_GET_COUNTER(&htim3);
 		  PositionUnwrap = CurrentPosition + (61440*(flag-1)); // get position unwrap
+		  MyQEI.setpointPulse = (MyQEI.setpointDeg*307200)/36000; // degree input to pulse
 
+		  error = MyQEI.setpointPulse - PositionUnwrap;
+
+		  if(MyQEI.setpointDeg <= 36000){
+			  PIDController(error);
+		  }
 	  }
   }
   /* USER CODE END 3 */
@@ -431,6 +453,30 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 uint64_t micros(){
 	return __HAL_TIM_GET_COUNTER(&htim5) + _micros;
 }
+
+void PIDController(){
+	  ITerm = ITerm + (Ki*error);
+	  duty = (Kp*error) + (ITerm) - (Kd*(error - previouserror));
+	  if(duty > 0){
+		dutyNote = 1;
+		if(duty > 100.0){
+			duty = 100.0;
+		}
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,(uint16_t)(duty));
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,0);
+	  }
+	  else{
+		dutyNote = 0;
+		duty = duty*(-1.0);
+		if(duty > 100.0){
+			duty = 100.0;
+		}
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,0);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,(uint16_t)(duty));
+	  }
+	  previouserror = error;
+}
+
 /* USER CODE END 4 */
 
 /**
