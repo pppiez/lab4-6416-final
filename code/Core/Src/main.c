@@ -120,7 +120,6 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start(&htim5); // micros()
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_1|TIM_CHANNEL_2); // read encoder from channel 1 and channel 2
 
   // control variable
