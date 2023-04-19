@@ -390,12 +390,10 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if(htim == &htim3){
-		if(dutyNote){
 			flag = flag + 1;
 		}
-		else{
-			flag = flag - 1;
-		}
+	else{
+		flag = flag - 1;
 	}
 }
 
