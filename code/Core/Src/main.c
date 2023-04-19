@@ -62,9 +62,9 @@ struct encoder
 struct encoder MyQEI = {0};
 
 // PID
-float Kp = 1.8;
+float Kp = 1;
 float Ki = 0;
-float Kd = 0;
+float Kd = 1.5;
 float error = 0;
 float previouserror = 0;
 float ITerm = 0;
@@ -449,7 +449,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void PIDController(){
 	  ITerm = ITerm + (Ki*error);
-	  duty = (Kp*error) + (ITerm) - (Kd*(error - previouserror));
+	  duty = (Kp*error) + (ITerm) + (Kd*(error - previouserror));
 	  if(error <= 2 && error >= -2){
 		  duty = 0;
 	  }

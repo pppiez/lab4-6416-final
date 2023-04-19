@@ -3184,7 +3184,7 @@ LOAD c:/st/stm32cubeide_1.11.2/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.ext
                 0x0000000008004160                . = ALIGN (0x4)
                 0x0000000008004160                _sidata = LOADADDR (.data)
 
-.data           0x0000000020000000       0x14 load address 0x0000000008004160
+.data           0x0000000020000000       0x18 load address 0x0000000008004160
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sdata = .
  *(.data)
@@ -3194,26 +3194,28 @@ LOAD c:/st/stm32cubeide_1.11.2/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.ext
                 0x0000000020000000                dutyNote
  .data.Kp       0x0000000020000004        0x4 ./Core/Src/main.o
                 0x0000000020000004                Kp
+ .data.Kd       0x0000000020000008        0x4 ./Core/Src/main.o
+                0x0000000020000008                Kd
  .data.SystemCoreClock
-                0x0000000020000008        0x4 ./Core/Src/system_stm32f4xx.o
-                0x0000000020000008                SystemCoreClock
+                0x000000002000000c        0x4 ./Core/Src/system_stm32f4xx.o
+                0x000000002000000c                SystemCoreClock
  .data.uwTickPrio
-                0x000000002000000c        0x4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
-                0x000000002000000c                uwTickPrio
+                0x0000000020000010        0x4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+                0x0000000020000010                uwTickPrio
  .data.uwTickFreq
-                0x0000000020000010        0x1 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
-                0x0000000020000010                uwTickFreq
+                0x0000000020000014        0x1 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+                0x0000000020000014                uwTickFreq
  *(.RamFunc)
  *(.RamFunc*)
-                0x0000000020000014                . = ALIGN (0x4)
- *fill*         0x0000000020000011        0x3 
-                0x0000000020000014                _edata = .
+                0x0000000020000018                . = ALIGN (0x4)
+ *fill*         0x0000000020000015        0x3 
+                0x0000000020000018                _edata = .
 
-.igot.plt       0x0000000020000014        0x0 load address 0x0000000008004174
- .igot.plt      0x0000000020000014        0x0 c:/st/stm32cubeide_1.11.2/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.100.202210260954/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x0000000020000014                . = ALIGN (0x4)
+.igot.plt       0x0000000020000018        0x0 load address 0x0000000008004178
+ .igot.plt      0x0000000020000018        0x0 c:/st/stm32cubeide_1.11.2/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.100.202210260954/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x0000000020000018                . = ALIGN (0x4)
 
-.bss            0x0000000020000018      0x174 load address 0x0000000008004174
+.bss            0x0000000020000018      0x174 load address 0x0000000008004178
                 0x0000000020000018                _sbss = .
                 0x0000000020000018                __bss_start__ = _sbss
  *(.bss)
@@ -3241,15 +3243,14 @@ LOAD c:/st/stm32cubeide_1.11.2/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.ext
                 0x0000000020000160                MyQEI
  .bss.Ki        0x000000002000016c        0x4 ./Core/Src/main.o
                 0x000000002000016c                Ki
- .bss.Kd        0x0000000020000170        0x4 ./Core/Src/main.o
-                0x0000000020000170                Kd
- .bss.error     0x0000000020000174        0x4 ./Core/Src/main.o
-                0x0000000020000174                error
+ .bss.error     0x0000000020000170        0x4 ./Core/Src/main.o
+                0x0000000020000170                error
  .bss.previouserror
-                0x0000000020000178        0x4 ./Core/Src/main.o
-                0x0000000020000178                previouserror
- .bss.ITerm     0x000000002000017c        0x4 ./Core/Src/main.o
-                0x000000002000017c                ITerm
+                0x0000000020000174        0x4 ./Core/Src/main.o
+                0x0000000020000174                previouserror
+ .bss.ITerm     0x0000000020000178        0x4 ./Core/Src/main.o
+                0x0000000020000178                ITerm
+ *fill*         0x000000002000017c        0x4 
  .bss.timestamp.0
                 0x0000000020000180        0x8 ./Core/Src/main.o
  .bss.uwTick    0x0000000020000188        0x4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
@@ -3260,7 +3261,7 @@ LOAD c:/st/stm32cubeide_1.11.2/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.ext
                 0x000000002000018c                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x000000002000018c      0x604 load address 0x0000000008004174
+                0x000000002000018c      0x604 load address 0x0000000008004178
                 0x0000000020000190                . = ALIGN (0x8)
  *fill*         0x000000002000018c        0x4 
                 [!provide]                        PROVIDE (end = .)
