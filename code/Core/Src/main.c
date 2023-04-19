@@ -152,7 +152,7 @@ int main(void)
 		  error = MyQEI.setpointPulse - PositionUnwrap;
 
 		  if(MyQEI.setpointDeg <= 36000){
-			  PIDController(error);
+			  PIDController();
 		  }
 	  }
   }
@@ -451,6 +451,9 @@ void PIDController(){
 	  ITerm = ITerm + (Ki*error);
 	  duty = (Kp*error) + (ITerm) - (Kd*(error - previouserror));
 	  if(error <= 2 && error >= -2){
+		  duty = 0;
+	  }
+	  if(MyQEI.setpointDeg <= 0){
 		  duty = 0;
 	  }
 
