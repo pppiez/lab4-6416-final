@@ -45,7 +45,6 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-// unwrap
 float duty = 0;
 float CurrentPosition = 0;
 
