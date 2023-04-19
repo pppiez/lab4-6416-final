@@ -47,7 +47,6 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 // unwrap
 float duty = 0;
-float dutyNote = 1;
 float CurrentPosition = 0;
 
 struct encoder
@@ -388,12 +387,11 @@ void PIDController(){
 	  if(error <= 4 && error >= -4){
 		  duty = 0;
 	  }
-	  if(MyQEI.setpointDeg <= 0){
+	  if(MyQEI.setpointDeg < 0){
 		  duty = 0;
 	  }
 
 	  if(duty > 0){
-		dutyNote = 1;
 		if(duty > 100.0){
 			duty = 100.0;
 		}
@@ -401,7 +399,6 @@ void PIDController(){
 		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,0);
 	  }
 	  else{
-		dutyNote = 0;
 		duty = duty*(-1.0);
 		if(duty > 100.0){
 			duty = 100.0;
