@@ -57,7 +57,7 @@ struct encoder
 {
 	float setpointDeg;
 	float setpointPulse;
-	uint32_t myDeg;
+	float myDeg;
 };
 struct encoder MyQEI = {0};
 
@@ -147,7 +147,7 @@ int main(void)
 		  PositionUnwrap = CurrentPosition + (61440.0*(flag-1)); // get position unwrap
 		  MyQEI.setpointPulse = (MyQEI.setpointDeg*307200.0)/36000.0; // degree input to pulse
 
-		  MyQEI.myDeg = (uint32_t)((PositionUnwrap*36000.0)/307200.0);
+		  MyQEI.myDeg = (PositionUnwrap*36000.0)/307200.0;
 
 		  error = MyQEI.setpointPulse - PositionUnwrap;
 
@@ -450,6 +450,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void PIDController(){
 	  ITerm = ITerm + (Ki*error);
 	  duty = (Kp*error) + (ITerm) - (Kd*(error - previouserror));
+	  if(error <= 2 && error >= -2){
+		  duty = 0;
+	  }
+
 	  if(duty > 0){
 		dutyNote = 1;
 		if(duty > 100.0){
